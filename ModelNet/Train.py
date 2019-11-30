@@ -190,7 +190,7 @@ if __name__ == '__main__':
             main_logger.info('Start training of {} fold....'.format(fold_id))
 
         train_dataset = RotModelNet(data_dir, '10', True,  transform, pre_transform)
-        valid_dataset = RotModelNet(data_dir, '10', False,  transform, pre_transform)
+        valid_dataset = RotModelNet(data_dir, '10', True,  transform, pre_transform)
 
         if len(train_config['DEVICE_LIST']) > 1:
             train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
