@@ -1,0 +1,58 @@
+# main
+PIPELINE_NAME: pointnet2
+
+DIRECTORY:
+  ROOT_DIRECTORY: /workspace/logs/Spine/ModelNet
+  DATA_DIRECTORY: /workspace/dataset/graph/ModelNet10
+  LOGGER_DIRECTORY: log/pointnet2
+
+SEED: 2019
+DEVICE: cuda
+DEVICE_LIST: [0]
+WORKERS: 10
+
+MODEL:
+  PY: models.pointnet2
+  CLASS: Net
+
+FOLD:
+  NUMBER: 5
+  USEFOLDS: [0]
+#  FILE: /workspace/dataset/ctDNA/unordered/csv/fileset.csv
+
+# preprocessing
+
+# training
+CRITERION:
+  NAME: nll_loss
+
+OPTIMIZER:
+  CLASS: Adam
+  ARGS:
+    lr: 0.01
+    weight_decay: 0.000005
+
+SCHEDULER:
+  CLASS: ReduceLROnPlateau
+  ARGS:
+    mode: max
+    factor: 0.1
+    patience: 5
+    threshold: 0.0000001
+    min_lr: 0.0000001
+
+
+BATCH_SIZE: 32
+ACCUMULATION_STEP: 1
+EPOCHS: 200
+EARLY_STOPPING: 60
+
+# saving
+CHECKPOINTS:
+  FULL_FOLDER: checkpoints
+  BEST_FOLDER: checkpoints
+  TOPK: 3
+
+# validation
+EVALUATION:
+  SEARCH_PAIRS: [[0.3], [0.5], [0.7], [0.9]]
