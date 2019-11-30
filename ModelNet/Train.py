@@ -45,11 +45,8 @@ def init_eval_fns(train_config):
 
     thrs_list = [thr for thr in search_pairs]
 
-    main_thr = 0.5
-    print('Evaluation thresholds: ', main_thr)
     local_metric_fn = functools.partial(
         apply_deep_thresholds,
-        threshold=0.5
     )
 
     global_metric_fn = functools.partial(
@@ -101,7 +98,7 @@ def train_fold(
         if distrib_config['LOCAL_RANK'] == 0:
             fold_logger.info('load model from {}'.format(pretrained_model_path))
 
-    loss_fn = getattr(F, train_config['CRITERION']['NAME'])
+    loss_fn = getattr(torch.nn, train_config['CRITERION']['NAME'])()
 
     if train_config['OPTIMIZER']['CLASS'] == 'RAdam':
         optimizer_class = getattr(radam, train_config['OPTIMIZER']['CLASS'])

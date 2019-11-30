@@ -77,10 +77,10 @@ class Learning():
         return current_loss_mean
 
     def batch_train(self, model, batch):
+        # pdb.set_trace()
         batch_graphs = batch.to(device=self.device)
         batch_labels = batch.y
         batch_pred = model(batch_graphs)
-        batch_pred = F.log_softmax(batch_pred, dim=-1)
         loss = self.loss_fn(batch_pred, batch_labels) / self.accumulation_step
 
         loss.backward()
@@ -91,13 +91,12 @@ class Learning():
     def valid_epoch(self, model, loader, local_metric_fn):
         tqdm_loader = tqdm(loader)
         current_score_mean = torch.tensor(0.).cuda()
-        eval_list = []
         for idx, batch in enumerate(tqdm_loader):
             with torch.no_grad():
-                batch_labels = batch.y
+                # pdb.set_trace()
+                batch_labels = batch.y.cpu()
                 batch_pred = self.batch_valid(model, batch)
                 batch_pred = batch_pred.max(1)[1]
-                eval_list.append((batch_pred, batch_labels))
                 score = local_metric_fn(batch_pred, batch_labels)
                 current_score_mean = (current_score_mean * idx + score) / (idx + 1)
 
@@ -106,7 +105,7 @@ class Learning():
         if self.distrib_config['DISTRIBUTED']:
             current_score_mean = reduce_tensor(current_score_mean, self.distrib_config['WORLD_SIZE'])
         # empty_cuda_cache()
-        return eval_list, current_score_mean.item()
+        return current_score_mean.item()
 
     def batch_valid(self, model, batch):
         batch_graphs = batch.to(device=self.device)
@@ -114,17 +113,18 @@ class Learning():
         batch_pred = F.log_softmax(batch_pred, dim=-1)
         return batch_pred.cpu()
 
-    def process_summary(self, eval_list, global_metric_fn):
+    def process_summary(self, valid_score_mean):
         self.logger.info('{} epoch: \t start searching thresholds....'.format(self.epoch))
-        selected_score, thr = global_metric_fn(eval_list)
+        # selected_score, thr = global_metric_fn(eval_list)
+        selected_score = valid_score_mean
 
         epoch_summary = pd.DataFrame(
-            data=[[self.epoch, selected_score, thr]],
-            columns=['epoch', 'best_metric', 'best_thr']
+            data=[[self.epoch, selected_score]],
+            columns=['epoch', 'best_metric']
         )
 
         if self.distrib_config['LOCAL_RANK'] == 0:
-            self.logger.info(f'Epoch {self.epoch}: \t Calculated score: {selected_score:.6f}, thr: {thr}')
+            self.logger.info(f'Epoch {self.epoch}: \t Calculated score: {selected_score:.6f}')
             self.tb_logger.add_scalar('Valid/score', selected_score, self.epoch)
 
             if not self.summary_file.is_file():
@@ -198,8 +198,8 @@ class Learning():
             if self.distrib_config['LOCAL_RANK'] == 0:
                 self.logger.info(f'Epoch {self.epoch}: \t start validation....')
             model.eval()
-            eval_list, valid_score_mean = self.valid_epoch(model, valid_dataloader, local_metric_fn)
-            selected_score = self.process_summary(eval_list, global_metric_fn)
+            valid_score_mean = self.valid_epoch(model, valid_dataloader, local_metric_fn)
+            selected_score = self.process_summary(valid_score_mean)
 
             self.post_processing(selected_score, model)
 

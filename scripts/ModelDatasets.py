@@ -67,7 +67,9 @@ class RotModelNet(ModelNet):
             data = data if self.transform is None else self.transform(data)
 
             rot_idx = np.random.randint(0, len(self.rot_list))
-            rot_transform = Rotate(self.rot_list[rot_idx][1], self.rot_list[rot_idx][0])
+            data = Rotate(self.rot_list[rot_idx][1], self.rot_list[rot_idx][0])(data)
+            data.category = data.y
+            data.y = rot_idx
             return data
         elif isinstance(idx, slice):
             return self.__indexing__(range(*idx.indices(len(self))))

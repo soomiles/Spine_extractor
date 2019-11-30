@@ -24,7 +24,7 @@ FOLD:
 
 # training
 CRITERION:
-  NAME: nll_loss
+  NAME: CrossEntropyLoss
 
 OPTIMIZER:
   CLASS: Adam
