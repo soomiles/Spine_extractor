@@ -176,7 +176,7 @@ if __name__ == '__main__':
 
     pipeline_name = train_config['PIPELINE_NAME']
 
-    pre_transform, transform = T.NormalizeScale(), T.SamplePoints(2048)
+    pre_transform, transform = T.Compose([T.NormalizeScale(), T.SamplePoints(2048)]), None
 
     num_workers = train_config['WORKERS']
     batch_size = train_config['BATCH_SIZE']

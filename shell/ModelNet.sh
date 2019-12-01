@@ -8,4 +8,4 @@ sudo NV_GPU=0 nvidia-docker run \
  --shm-size "32G" \
  hslee:geometry \
  /bin/bash -c 'cd /tmp/spine &&
-  python -m ModelNet.Train --config_path=/tmp/spine/config/ModelNet-train.yaml'
+  python -m ModelNet.Train --config_path=/tmp/spine/config/ModelNet-point.yaml'
