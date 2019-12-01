@@ -1,19 +1,7 @@
-import os
-import glob
-import math
-from collections import deque
-from tqdm import tqdm_notebook
-import numpy as np
-
 import torch
 import torch.nn.functional as F
 from torch.nn import Sequential as Seq, Linear as Lin, ReLU, BatchNorm1d as BN
-from torch_geometric.datasets import ModelNet
-import torch_geometric.transforms as T
-from torch_geometric.transforms import LinearTransformation
-from torch_geometric.data import DataLoader
 from torch_geometric.nn import PointConv, fps, radius, global_max_pool
-from torch_geometric.io import read_off
 
 
 class SAModule(torch.nn.Module):
@@ -78,28 +66,3 @@ class Net(torch.nn.Module):
         x = F.dropout(x, p=0.5, training=self.training)
         x = self.lin3(x)
         return x
-
-
-def train(epoch):
-    model.train()
-
-    for data in train_loader:
-        data = data.to(device)
-        optimizer.zero_grad()
-        loss = F.nll_loss(model(data), data.y)
-        loss.backward()
-        optimizer.step()
-
-
-def test(loader):
-    model.eval()
-
-    correct = 0
-    for data in loader:
-        data = data.to(device)
-        with torch.no_grad():
-            pred = model(data).max(1)[1]
-        correct += pred.eq(data.y).sum().item()
-    return correct / len(loader.dataset)
-
-

@@ -1,15 +1,11 @@
 from pathlib import Path
 import pandas as pd
 import torch
-from apex import amp
 from tqdm import tqdm
-from scripts.utils import empty_cuda_cache, reduce_tensor, one_hot_embedding
-from scripts.tb_helper import simple_result, normalize_tensor2tensor, normalize_tensor2numpy
+from scripts.utils import empty_cuda_cache, reduce_tensor
 import heapq
-import random
 import torch.nn.functional as F
 from torchvision.utils import save_image
-import matplotlib.pyplot as plt
 import pdb
 
 class Learning():
@@ -77,10 +73,11 @@ class Learning():
         return current_loss_mean
 
     def batch_train(self, model, batch):
-        # pdb.set_trace()
         batch_graphs = batch.to(device=self.device)
         batch_labels = batch.y
         batch_pred = model(batch_graphs)
+        pdb.set_trace()
+        batch_pred = F.softmax(batch_pred, dim=1)
         loss = self.loss_fn(batch_pred, batch_labels) / self.accumulation_step
 
         loss.backward()
@@ -93,10 +90,10 @@ class Learning():
         current_score_mean = torch.tensor(0.).cuda()
         for idx, batch in enumerate(tqdm_loader):
             with torch.no_grad():
-                # pdb.set_trace()
                 batch_labels = batch.y.cpu()
                 batch_pred = self.batch_valid(model, batch)
                 batch_pred = batch_pred.max(1)[1]
+                pdb.set_trace()
                 score = local_metric_fn(batch_pred, batch_labels)
                 current_score_mean = (current_score_mean * idx + score) / (idx + 1)
 

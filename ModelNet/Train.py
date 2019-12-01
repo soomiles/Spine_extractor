@@ -2,21 +2,16 @@ import argparse
 import os
 import sys
 from pathlib import Path
-from scripts.utils import load_yaml, seed_everything, init_logger, WrappedModel, DistributedWeightedRandomSampler
+from scripts.utils import load_yaml, seed_everything, init_logger
 from scripts.tb_helper import init_tb_logger
 from scripts.metric import apply_deep_thresholds, search_deep_thresholds
 from scripts.ModelDatasets import RotModelNet
 from ModelNet.Learning import Learning
-import numpy as np
 from torch_geometric.data import DataLoader
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
 import torch_geometric.transforms as T
-import albumentations as albu
 import functools
 import importlib
-from ast import literal_eval
 from apex.parallel import DistributedDataParallel, convert_syncbn_model
 
 sys.path.append('/workspace/lib/segmentation_models.pytorch')
@@ -176,7 +171,7 @@ if __name__ == '__main__':
 
     pipeline_name = train_config['PIPELINE_NAME']
 
-    pre_transform, transform = T.Compose([T.NormalizeScale(), T.SamplePoints(2048)]), None
+    pre_transform, transform = T.Compose([T.NormalizeScale()]), T.SamplePoints(2048)
 
     num_workers = train_config['WORKERS']
     batch_size = train_config['BATCH_SIZE']
