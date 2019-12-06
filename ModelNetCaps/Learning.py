@@ -49,7 +49,7 @@ class Learning():
             if self.distrib_config['LOCAL_RANK'] == 0:
                 logger.info('Pretrained best score is {:.5}'.format(self.best_score))
         else:
-            self.best_score = 0
+            self.best_score = 10000
         self.best_score = 0
         self.best_epoch = -1
         self.checkpoints_topk = checkpoints_topk
