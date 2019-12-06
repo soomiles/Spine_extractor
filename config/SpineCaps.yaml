@@ -1,0 +1,64 @@
+# main
+PIPELINE_NAME: pointcapsnet
+
+DIRECTORY:
+  ROOT_DIRECTORY: /workspace/logs/Spine/ModelNet
+  DATA_DIRECTORY: /workspace/dataset/graph/ModelNet10
+  LOGGER_DIRECTORY: log/pointcapsnet
+
+SEED: 2019
+DEVICE: cuda
+DEVICE_LIST: [0]
+WORKERS: 10
+
+MODEL:
+  PY: models.pointcapsnet
+  CLASS: PointCapsNet
+  ARGS:
+    prim_caps_size: 1024
+    prim_vec_size: 16
+    latent_caps_size: 32
+    latent_vec_size: 16
+    num_points: 1024
+
+FOLD:
+  NUMBER: 5
+  USEFOLDS: [0]
+#  FILE: /workspace/dataset/ctDNA/unordered/csv/fileset.csv
+
+# preprocessing
+
+# training
+#CRITERION:
+#  NAME: CrossEntropyLoss
+
+OPTIMIZER:
+  CLASS: Adam
+  ARGS:
+    lr: 0.01
+    weight_decay: 0.00005
+
+SCHEDULER:
+  CLASS: ReduceLROnPlateau
+  ARGS:
+    mode: min
+    factor: 0.1
+    patience: 5
+    threshold: 0.0000001
+    min_lr: 0.0000001
+
+
+BATCH_SIZE: 40
+ACCUMULATION_STEP: 1
+EPOCHS: 200
+EARLY_STOPPING: 200
+
+# saving
+CHECKPOINTS:
+  FULL_FOLDER: checkpoints
+  BEST_FOLDER: checkpoints
+  TOPK: 3
+
+# validation
+EVALUATION:
+  SEARCH_PAIRS: [[0.3], [0.5], [0.7], [0.9]]
