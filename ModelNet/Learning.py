@@ -76,8 +76,7 @@ class Learning():
         batch_graphs = batch.to(device=self.device)
         batch_labels = batch.y
         batch_pred = model(batch_graphs)
-        pdb.set_trace()
-        batch_pred = F.softmax(batch_pred, dim=1)
+        batch_pred = F.log_softmax(batch_pred, dim=-1)
         loss = self.loss_fn(batch_pred, batch_labels) / self.accumulation_step
 
         loss.backward()
@@ -93,7 +92,6 @@ class Learning():
                 batch_labels = batch.y.cpu()
                 batch_pred = self.batch_valid(model, batch)
                 batch_pred = batch_pred.max(1)[1]
-                pdb.set_trace()
                 score = local_metric_fn(batch_pred, batch_labels)
                 current_score_mean = (current_score_mean * idx + score) / (idx + 1)
 

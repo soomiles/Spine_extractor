@@ -9,6 +9,7 @@ from scripts.ModelDatasets import RotModelNet
 from ModelNet.Learning import Learning
 from torch_geometric.data import DataLoader
 import torch
+import torch.nn.functional as F
 import torch_geometric.transforms as T
 import functools
 import importlib
@@ -18,13 +19,6 @@ sys.path.append('/workspace/lib/segmentation_models.pytorch')
 sys.path.append('/workspace/lib/utils')
 import radam
 
-class SingleFromMultipleLoadError(Exception):
-    def __str__(self):
-        return "SingleFromMultipleLoadError"
-
-class MultipleFromSingleLoadError(Exception):
-    def __str__(self):
-        return "MultipleFromSingleLoadError"
 
 def argparser():
     parser = argparse.ArgumentParser(description='ModelNet self-supervised learning')
@@ -93,7 +87,7 @@ def train_fold(
         if distrib_config['LOCAL_RANK'] == 0:
             fold_logger.info('load model from {}'.format(pretrained_model_path))
 
-    loss_fn = getattr(torch.nn, train_config['CRITERION']['NAME'])()
+    loss_fn = getattr(F, train_config['CRITERION']['NAME'])
 
     if train_config['OPTIMIZER']['CLASS'] == 'RAdam':
         optimizer_class = getattr(radam, train_config['OPTIMIZER']['CLASS'])
@@ -185,7 +179,7 @@ if __name__ == '__main__':
             main_logger.info('Start training of {} fold....'.format(fold_id))
 
         train_dataset = RotModelNet(data_dir, '10', True,  transform, pre_transform)
-        valid_dataset = RotModelNet(data_dir, '10', True,  transform, pre_transform)
+        valid_dataset = RotModelNet(data_dir, '10', False,  transform, pre_transform)
 
         if len(train_config['DEVICE_LIST']) > 1:
             train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
