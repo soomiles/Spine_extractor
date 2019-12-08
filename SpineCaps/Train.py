@@ -5,7 +5,7 @@ from pathlib import Path
 from scripts.utils import load_yaml, seed_everything, init_logger
 from scripts.tb_helper import init_tb_logger
 from scripts.metric import apply_deep_thresholds, search_deep_thresholds
-from torch_geometric.datasets import ModelNet
+from scripts.SpineDataset import SpineDataset
 from scripts.ChamferLoss import ChamferLoss
 from ModelNetCaps.Learning import Learning
 from torch_geometric.data import DataLoader
@@ -185,8 +185,8 @@ if __name__ == '__main__':
         if distrib_config['LOCAL_RANK'] == 0:
             main_logger.info('Start training of {} fold....'.format(fold_id))
 
-        train_dataset = ModelNet(data_dir, '10', True,  transform, pre_transform)
-        valid_dataset = ModelNet(data_dir, '10', True,  transform, pre_transform)
+        train_dataset = SpineDataset(data_dir, transform, pre_transform)
+        valid_dataset = SpineDataset(data_dir, transform, pre_transform)
 
         if len(train_config['DEVICE_LIST']) > 1:
             train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)

@@ -2,8 +2,8 @@
 PIPELINE_NAME: pointcapsnet
 
 DIRECTORY:
-  ROOT_DIRECTORY: /workspace/logs/Spine/ModelNet
-  DATA_DIRECTORY: /workspace/dataset/graph/ModelNet10
+  ROOT_DIRECTORY: /workspace/logs/Spine/SpineCaps
+  DATA_DIRECTORY: /workspace/dataset/graph/Spine
   LOGGER_DIRECTORY: log/pointcapsnet
 
 SEED: 2019
@@ -50,8 +50,8 @@ SCHEDULER:
 
 BATCH_SIZE: 40
 ACCUMULATION_STEP: 1
-EPOCHS: 200
-EARLY_STOPPING: 200
+EPOCHS: 2000
+EARLY_STOPPING: 2000
 
 # saving
 CHECKPOINTS:
