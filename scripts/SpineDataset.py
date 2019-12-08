@@ -42,7 +42,6 @@ class SpineDataset(InMemoryDataset):
             data = PlyData.read(path)
             vert_data = torch.tensor(list(map(lambda x: (x[0], x[1], x[2]), data['vertex'].data)))
             face_data = torch.tensor(list(map(lambda x: (x[0].astype(np.long)), data['face'].data)))
-            #             name = path.name
             data = Data(pos=vert_data, face=face_data.T)
             data_list.append(data)
 
