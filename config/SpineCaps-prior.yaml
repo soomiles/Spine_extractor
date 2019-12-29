@@ -4,7 +4,7 @@ PIPELINE_NAME: pointcapsnet
 DIRECTORY:
   ROOT_DIRECTORY: /workspace/logs/Spine/SpineCaps
   DATA_DIRECTORY: /workspace/dataset/graph/Spine
-  LOGGER_DIRECTORY: log/pointcapsnet
+  LOGGER_DIRECTORY: log/prior
 
 SEED: 2019
 DEVICE: cuda
@@ -12,19 +12,22 @@ DEVICE_LIST: [0]
 WORKERS: 10
 
 MODEL:
-  PY: models.pointcapsnet
+  PY: models.pointcapsnet_prior
   CLASS: PointCapsNet
   ARGS:
     prim_caps_size: 1024
     prim_vec_size: 16
+    prior_size: 10
+    prior_vec_size: 128
     latent_caps_size: 32
-    latent_vec_size: 16
+    latent_vec_size: 32
     num_points: 1024
 
 FOLD:
   NUMBER: 5
   USEFOLDS: [0]
-#  FILE: /workspace/dataset/ctDNA/unordered/csv/fileset.csv
+
+FILE: /workspace/dataset/graph/Spine/raw/analysis.csv
 
 # preprocessing
 
@@ -33,24 +36,22 @@ FOLD:
 #  NAME: CrossEntropyLoss
 
 OPTIMIZER:
-  CLASS: Adam
+  CLASS: RAdam
   ARGS:
     lr: 0.01
     weight_decay: 0.00005
 
 SCHEDULER:
-  CLASS: ReduceLROnPlateau
+  CLASS: CosineAnnealingWarmRestarts
   ARGS:
-    mode: min
-    factor: 0.1
-    patience: 5
-    threshold: 0.0000001
-    min_lr: 0.0000001
+    T_0: 2
+    T_mult: 2
+    eta_min: 0.000001
 
 
 BATCH_SIZE: 40
 ACCUMULATION_STEP: 1
-EPOCHS: 2000
+EPOCHS: 3000
 EARLY_STOPPING: 200
 
 # saving

@@ -100,17 +100,18 @@ class PrimaryPointCapsLayer(nn.Module):
 
 
 class LatentCapsLayer(nn.Module):
-    def __init__(self, latent_caps_size=16, prim_caps_size=1024, prim_vec_size=16, latent_vec_size=64):
+    def __init__(self, latent_caps_size=16, prior_vec_size=64, prim_caps_size=1024, prim_vec_size=16, latent_vec_size=64):
         super(LatentCapsLayer, self).__init__()
         self.prim_vec_size = prim_vec_size
         self.prim_caps_size = prim_caps_size
+        self.prior_vec_size= prior_vec_size
         self.latent_caps_size = latent_caps_size
-        self.W = nn.Parameter(0.01 * torch.randn(latent_caps_size, prim_caps_size, latent_vec_size, prim_vec_size))
+        self.W = nn.Parameter(0.01 * torch.randn(latent_caps_size, prim_caps_size + prior_vec_size, latent_vec_size, prim_vec_size))
 
     def forward(self, x):
         u_hat = torch.squeeze(torch.matmul(self.W, x[:, None, :, :, None]), dim=-1)
         u_hat_detached = u_hat.detach()
-        b_ij = Variable(torch.zeros(x.size(0), self.latent_caps_size, self.prim_caps_size)).cuda()
+        b_ij = Variable(torch.zeros(x.size(0), self.latent_caps_size, self.prim_caps_size + self.prior_vec_size)).cuda()
         num_iterations = 3
         for iteration in range(num_iterations):
             c_ij = F.softmax(b_ij, 1)
@@ -176,7 +177,7 @@ class PointCapsNet(nn.Module):
         super(PointCapsNet, self).__init__()
         self.conv_layer = ConvLayer()
         self.primary_point_caps_layer = PrimaryPointCapsLayer(prim_vec_size, prior_size, prior_vec_size, num_points)
-        self.latent_caps_layer = LatentCapsLayer(latent_caps_size, prim_caps_size + prim_caps_size,
+        self.latent_caps_layer = LatentCapsLayer(latent_caps_size, prior_vec_size, prim_caps_size,
                                                  prim_vec_size, latent_vec_size)
         self.caps_decoder = CapsDecoder(latent_caps_size, latent_vec_size, num_points)
 
