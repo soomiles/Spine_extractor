@@ -58,7 +58,7 @@ class CSEModule(nn.Module):
         )
 
     def forward(self, x):
-        return x * self.cSE(x)
+        return x + x * self.cSE(x)
 
 
 class PrimaryPointCapsLayer(nn.Module):

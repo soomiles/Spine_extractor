@@ -38,7 +38,7 @@ FILE: /workspace/dataset/graph/Spine/raw/analysis.csv
 OPTIMIZER:
   CLASS: RAdam
   ARGS:
-    lr: 0.01
+    lr: 0.001
     weight_decay: 0.00005
 
 SCHEDULER:
