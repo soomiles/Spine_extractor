@@ -7,7 +7,7 @@ from scripts.tb_helper import init_tb_logger
 from scripts.metric import apply_deep_thresholds, search_deep_thresholds
 from scripts.SpineDataset import SpinePriorDataset
 from scripts.ChamferLoss import ChamferLoss
-from ModelNetCaps.Learning import Learning
+from SpineCaps.Learning import Learning
 from torch_geometric.data import DataLoader
 import torch
 import torch_geometric.transforms as T

@@ -18,9 +18,9 @@ MODEL:
     prim_caps_size: 1024
     prim_vec_size: 16
     prior_size: 10
-    prior_vec_size: 128
+    prior_vec_size: 64
     latent_caps_size: 32
-    latent_vec_size: 32
+    latent_vec_size: 16
     num_points: 1024
 
 FOLD:
@@ -49,7 +49,7 @@ SCHEDULER:
     eta_min: 0.000001
 
 
-BATCH_SIZE: 40
+BATCH_SIZE: 30
 ACCUMULATION_STEP: 1
 EPOCHS: 3000
 EARLY_STOPPING: 200

@@ -74,7 +74,7 @@ class Learning():
 
     def batch_train(self, model, batch):
         batch = batch.to(device=self.device)
-        batch_priors = torch.stack(list(map(lambda x: x.pos, batch.to_data_list())))
+        batch_priors = torch.stack(list(map(lambda x: x.prior, batch.to_data_list()))).float()
         batch_graphs = torch.stack(list(map(lambda x: x.pos, batch.to_data_list())))
         batch_graphs = batch_graphs.transpose(2, 1).contiguous()
         codewords, reconstruction = model(batch_graphs, batch_priors)
@@ -105,7 +105,7 @@ class Learning():
 
     def batch_valid(self, model, batch):
         batch = batch.to(device=self.device)
-        batch_priors = torch.stack(list(map(lambda x: x.pos, batch.to_data_list())))
+        batch_priors = torch.stack(list(map(lambda x: x.prior, batch.to_data_list()))).float()
         batch_graphs = torch.stack(list(map(lambda x: x.pos, batch.to_data_list())))
         batch_graphs = batch_graphs.transpose(2, 1).contiguous()
         codewords, reconstruction = model(batch_graphs, batch_priors)

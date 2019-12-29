@@ -9,6 +9,7 @@ import torch.utils.data
 from torch.autograd import Variable
 import torch.nn.functional as F
 from collections import OrderedDict
+import pdb
 
 
 class ConvLayer(nn.Module):
@@ -84,6 +85,7 @@ class PrimaryPointCapsLayer(nn.Module):
     def forward(self, x, prior):
         u = []
         for capsule, encoder, cse in zip(self.capsules, self.prior_ens, self.cse_modules):
+            # pdb.set_trace()
             k = torch.cat([capsule(x), encoder(prior).unsqueeze(2)], dim=1)
             k = cse(k)
             u.append(k)
