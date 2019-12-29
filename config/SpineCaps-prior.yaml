@@ -36,17 +36,19 @@ FILE: /workspace/dataset/graph/Spine/raw/analysis.csv
 #  NAME: CrossEntropyLoss
 
 OPTIMIZER:
-  CLASS: RAdam
+  CLASS: Adam
   ARGS:
-    lr: 0.001
+    lr: 0.01
     weight_decay: 0.00005
 
 SCHEDULER:
-  CLASS: CosineAnnealingWarmRestarts
+  CLASS: ReduceLROnPlateau
   ARGS:
-    T_0: 2
-    T_mult: 2
-    eta_min: 0.000001
+    mode: min
+    factor: 0.1
+    patience: 5
+    threshold: 0.0000001
+    min_lr: 0.0000001
 
 
 BATCH_SIZE: 30
