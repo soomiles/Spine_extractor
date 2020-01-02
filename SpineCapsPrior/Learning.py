@@ -73,15 +73,18 @@ class Learning():
         return current_loss_mean
 
     def batch_train(self, model, batch):
-        batch_graphs = batch.to(device=self.device)
-        batch_graphs = torch.stack(list(map(lambda x: x.pos, batch_graphs.to_data_list())))
+        batch = batch.to(device=self.device)
+        batch_priors = torch.stack(list(map(lambda x: x.prior, batch.to_data_list()))).float()
+        batch_graphs = torch.stack(list(map(lambda x: x.pos, batch.to_data_list())))
         batch_graphs = batch_graphs.transpose(2, 1).contiguous()
-        codewords, reconstruction = model(batch_graphs)
+        codewords, reconstruction = model(batch_graphs, batch_priors)
 
         batch_graphs_ = batch_graphs.transpose(2, 1).contiguous()
         reconstruction_ = reconstruction.transpose(2, 1).contiguous()
         loss = self.loss_fn(batch_graphs_, reconstruction_) / self.accumulation_step
 
+        if torch.isnan(loss):
+            pdb.set_trace()
         loss.backward()
         # with amp.scale_loss(loss, self.optimizer, loss_id=0) as scaled_loss:
         #     scaled_loss.backward()
@@ -103,10 +106,11 @@ class Learning():
         return current_loss_mean.item()
 
     def batch_valid(self, model, batch):
-        batch_graphs = batch.to(device=self.device)
-        batch_graphs = torch.stack(list(map(lambda x: x.pos, batch_graphs.to_data_list())))
+        batch = batch.to(device=self.device)
+        batch_priors = torch.stack(list(map(lambda x: x.prior, batch.to_data_list()))).float()
+        batch_graphs = torch.stack(list(map(lambda x: x.pos, batch.to_data_list())))
         batch_graphs = batch_graphs.transpose(2, 1).contiguous()
-        codewords, reconstruction = model(batch_graphs)
+        codewords, reconstruction = model(batch_graphs, batch_priors)
 
         batch_graphs_ = batch_graphs.transpose(2, 1).contiguous()
         reconstruction_ = reconstruction.transpose(2, 1).contiguous()

@@ -1,0 +1,37 @@
+DATA_DIRECTORY: '/workspace/dataset/graph/Spine/raw'
+PRIOR_CSV: '/workspace/dataset/graph/Spine/raw/analysis.csv'
+
+SEED: 2019
+NUM_WORKERS: 4
+DEVICE: cuda
+BATCH_SIZE: 1
+
+MODEL:
+  PY: models.pointcapsnet_prior
+  CLASS: PointCapsNet
+  ARGS:
+    prim_caps_size: 1024
+    prim_vec_size: 16
+    prior_size: 10
+    prior_vec_size: 64
+    latent_caps_size: 32
+    latent_vec_size: 32
+    num_points: 1024
+
+CHECKPOINTS:
+  FULL_FOLDER: checkpoints
+  BEST_FOLDER: checkpoints
+  PIPELINE_PATH: /workspace/logs/Spine/SpineCaps/log/prior
+  PIPELINE_NAME: pointcapsnet
+
+SUBMIT_BEST: True
+USEFOLDS: [0]
+SELECTED_CHECKPOINTS:
+  fold0: [4,5,9]
+  fold1: [10,21,23]
+  fold2: [6,8,10]
+  fold3: [0,2,45]
+  fold4: [1,3,11]
+
+RESULT_FOLDER: /workspace/logs/Spine/SpineCaps/log/prior
+RESULT: result_top3.pkl

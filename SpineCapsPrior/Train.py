@@ -5,9 +5,9 @@ from pathlib import Path
 from scripts.utils import load_yaml, seed_everything, init_logger
 from scripts.tb_helper import init_tb_logger
 from scripts.metric import apply_deep_thresholds, search_deep_thresholds
-from scripts.SpineDataset import SpineDataset
+from scripts.SpineDataset import SpinePriorDataset
 from scripts.ChamferLoss import ChamferLoss
-from ModelNetCaps.Learning import Learning
+from SpineCapsPrior.Learning import Learning
 from torch_geometric.data import DataLoader
 import torch
 import torch_geometric.transforms as T
@@ -173,6 +173,7 @@ if __name__ == '__main__':
     pipeline_name = train_config['PIPELINE_NAME']
 
     pre_transform, transform = T.Compose([T.NormalizeScale()]), T.SamplePoints(1024)
+    df_path = Path(train_config['FILE'])
 
     num_workers = train_config['WORKERS']
     batch_size = train_config['BATCH_SIZE']
@@ -185,8 +186,8 @@ if __name__ == '__main__':
         if distrib_config['LOCAL_RANK'] == 0:
             main_logger.info('Start training of {} fold....'.format(fold_id))
 
-        train_dataset = SpineDataset(data_dir, transform, pre_transform)
-        valid_dataset = SpineDataset(data_dir, transform, pre_transform)
+        train_dataset = SpinePriorDataset(data_dir, df_path, transform, pre_transform)
+        valid_dataset = SpinePriorDataset(data_dir, df_path, transform, pre_transform)
 
         if len(train_config['DEVICE_LIST']) > 1:
             train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
