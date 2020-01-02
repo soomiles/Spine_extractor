@@ -61,6 +61,9 @@ class SpineDataset(InMemoryDataset):
 class SpinePriorDataset(InMemoryDataset):
     def __init__(self, root, df_path, transform=None, pre_transform=None, pre_filter=None):
         self.df_path = df_path
+        self.df = pd.read_csv(self.df_path, index_col=0).drop(columns=['Type'])
+        self.df = (self.df-self.df.mean())/self.df.std()
+
         super(SpinePriorDataset, self).__init__(root, transform, pre_transform, pre_filter)
         path = self.processed_paths[0]
         self.data, self.slices = torch.load(path)
@@ -90,8 +93,7 @@ class SpinePriorDataset(InMemoryDataset):
         paths = [path for path in Path(self.raw_dir).glob('*.ply')]
         for path in paths:
             data = PlyData.read(path)
-            df = pd.read_csv(self.df_path, index_col=0).drop(columns=['Type'])
-            prior = torch.tensor(df.loc[path.name].values)
+            prior = torch.tensor(self.df.loc[path.name].values)
             vert_data = torch.tensor(list(map(lambda x: (x[0], x[1], x[2]), data['vertex'].data)))
             face_data = torch.tensor(list(map(lambda x: (x[0].astype(np.long)), data['face'].data)))
             data = Data(pos=vert_data, face=face_data.T, prior=prior)
