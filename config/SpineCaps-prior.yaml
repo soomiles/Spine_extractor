@@ -4,7 +4,7 @@ PIPELINE_NAME: pointcapsnet
 DIRECTORY:
   ROOT_DIRECTORY: /workspace/logs/Spine/SpineCaps
   DATA_DIRECTORY: /workspace/dataset/graph/Spine
-  LOGGER_DIRECTORY: log/prior
+  LOGGER_DIRECTORY: log/prior_512
 
 SEED: 2019
 DEVICE: cuda
@@ -20,7 +20,7 @@ MODEL:
     prior_size: 10
     prior_vec_size: 64
     latent_caps_size: 32
-    latent_vec_size: 32
+    latent_vec_size: 16
     num_points: 1024
 
 FOLD:
