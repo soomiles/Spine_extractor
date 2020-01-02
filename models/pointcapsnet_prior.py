@@ -41,9 +41,13 @@ class PriorEncoder(nn.Module):
         self.fc4 = torch.nn.Linear(out_channels, out_channels)
         self.bn4 = torch.nn.BatchNorm1d(out_channels)
 
+        self.th = torch.nn.Tanh()
+
     def forward(self, x):
         x = F.relu(self.bn1(self.fc1(x)))
         x = F.relu(self.bn2(self.fc2(x)))
+        x = F.relu(self.bn3(self.fc3(x)))
+        x = self.th(self.bn4(self.fc4(x)))
         return x
 
 
@@ -90,6 +94,9 @@ class PrimaryPointCapsLayer(nn.Module):
             k = cse(k)
             u.append(k)
         u = torch.stack(u, dim=2)
+        # if ((u ** 2).sum(-2) == 0).sum():
+        #     import pdb
+        #     pdb.set_trace()
         return self.squash(u.squeeze())
 
     def squash(self, input_tensor):
@@ -145,11 +152,11 @@ class PointGenCon(nn.Module):
         self.bn3 = torch.nn.BatchNorm1d(int(self.bottleneck_size / 4))
 
     def forward(self, x):
-        x = F.relu(self.bn1(self.conv1(x)))
-        x = F.relu(self.bn2(self.conv2(x)))
-        x = F.relu(self.bn3(self.conv3(x)))
-        x = self.th(self.conv4(x))
-        return x
+        x1 = F.relu(self.bn1(self.conv1(x)))
+        x2 = F.relu(self.bn2(self.conv2(x1)))
+        x3 = F.relu(self.bn3(self.conv3(x2)))
+        x4 = self.th(self.conv4(x3))
+        return x4
 
 
 class CapsDecoder(nn.Module):

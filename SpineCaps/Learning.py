@@ -83,6 +83,8 @@ class Learning():
         reconstruction_ = reconstruction.transpose(2, 1).contiguous()
         loss = self.loss_fn(batch_graphs_, reconstruction_) / self.accumulation_step
 
+        if torch.isnan(loss):
+            pdb.set_trace()
         loss.backward()
         # with amp.scale_loss(loss, self.optimizer, loss_id=0) as scaled_loss:
         #     scaled_loss.backward()

@@ -20,7 +20,7 @@ MODEL:
     prior_size: 10
     prior_vec_size: 64
     latent_caps_size: 32
-    latent_vec_size: 16
+    latent_vec_size: 32
     num_points: 1024
 
 FOLD:
@@ -51,7 +51,7 @@ SCHEDULER:
     min_lr: 0.0000001
 
 
-BATCH_SIZE: 30
+BATCH_SIZE: 32
 ACCUMULATION_STEP: 1
 EPOCHS: 3000
 EARLY_STOPPING: 200
