@@ -74,9 +74,10 @@ def build_checkpoints_list(cfg):
 
 
 def inference_image(model, data, device):
-    batch_graphs = data.to(device)
-    batch_graphs = batch_graphs.pos.unsqueeze(0).transpose(2,1).contiguous()
-    codewords, reconstruction = model(batch_graphs)
+    batch = data.to(device)
+    batch_priors = batch.prior.float().unsqueeze(0)
+    batch_graphs = batch.pos.unsqueeze(0).transpose(2,1).contiguous()
+    codewords, reconstruction = model(batch_graphs, batch_priors)
 
     reconstruction_ = reconstruction.transpose(2, 1).contiguous()
     return reconstruction_
