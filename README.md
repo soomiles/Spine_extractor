@@ -48,3 +48,9 @@ In addition, the attention is used for merging prior knowledge and features from
 
 As the result, chamfer loss is much lower than non-prior encoded PointCapsNet and Simillar shapes are clustered.
 (brown: irregular, purple: thin, green: stub, mint: mushroom)
+
+Visualization is made from [Interactive Dendritic Spine Analysis Based on 3D Morphological Features(Vis 2019)](https://ieeexplore.ieee.org/abstract/document/8933795)
+
+## reference
+- J. Choi et al., "Interactive Dendritic Spine Analysis Based on 3D Morphological Features," 2019 IEEE Visualization Conference (VIS), Vancouver, BC, Canada, 2019, pp. 171-175, doi: 10.1109/VISUAL.2019.8933795.
+- Y. Zhao, T. Birdal, H. Deng and F. Tombari, "3D Point Capsule Networks," 2019 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), Long Beach, CA, USA, 2019, pp. 1009-1018, doi: 10.1109/CVPR.2019.00110.
