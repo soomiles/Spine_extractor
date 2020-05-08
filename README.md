@@ -2,7 +2,7 @@
 ## Problem
 ![dendrite types](images/dendrite_types.png)
 
-**New Taxonomy is needed for Dendrite Spine by using 3D Mesh**
+**New Taxonomy is needed for Dendrite Spine**
 
 The dendritic spines are classified according to their shape as follows;
 filopdium, stubby, thin, and mushroom.
@@ -13,7 +13,7 @@ it appears to be more diverse than the taxonomic form.
 Those 4 shape taxonomy is made from 2D spine image.
 If we construct 3D mesh by stacking 2D spine images, much various shape are observed.
 
-The purpose of this task is clustering meshes and helps to construct new taxonomy by visualization.
+The purpose of this task is clustering meshes and helps to construct new taxonomy by visualization with 3D Meshes.
 In this repository, feature extraction from 3D point cloud is done before visualization.
 
 ## Dataset
