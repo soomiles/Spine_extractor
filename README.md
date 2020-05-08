@@ -18,6 +18,7 @@ In this repository, feature extraction from 3D point cloud is done before visual
 
 ## Dataset
 ![dendrite mesh](images/mesh.jpg)
+
 There are 112 dendrite meshes.
 
 Each dendrite is labeled as thin, stubby, mushroom, irregular and undefined shape.
@@ -25,6 +26,7 @@ This meshes are already normalized and smoothed by preprocessing.
 
 ## Method
 ![method](images/method.png)
+
 To extract features from 3D data, point cloud data type is a good option.
 
 Instead of point cloud, we can use graph based on mesh.
